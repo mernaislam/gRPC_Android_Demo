@@ -65,6 +65,6 @@ dependencies {
 
     implementation("androidx.compose.ui:ui-text:1.6.4")
 
-    // Reference the protos and server modules
+    // Reference the network module
     implementation(project(":network"))
 }
