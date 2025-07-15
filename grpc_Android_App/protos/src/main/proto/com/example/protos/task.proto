@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.example.protos";
+option java_outer_classname = "TaskServices";
+
+package task_service.v1;
+
+service TaskService {
+  rpc RegisterWorker (RegisterWorkerRequest) returns (RegisterWorkerResponse);
+  rpc AssignTask (AssignTaskRequest) returns (AssignTaskResponse);
+}
+
+// Register response and request
+message RegisterWorkerRequest {
+  string worker_address = 1;
+  string friendly_name = 2;
+}
+
+message RegisterWorkerResponse {
+  bool success = 1;
+  string friendly_name = 2;
+}
+
+// Assign response and request
+message AssignTaskRequest {
+  TaskRequest task_request = 1;
+  string task_id = 2;  // Unique identifier for the task
+  string requester_id = 3;  // ID of the client requesting the task
+}
+
+message AssignTaskResponse {
+  repeated Row result = 1;
+  map<string, RowIndices> worker_info = 2;  // Maps worker address to their assigned slice indices
+  map<string, string> friendly_names = 3;  // Maps worker address to their friendly names
+  string task_id = 4;  // Echo of the task_id from request
+  TaskStatus status = 5;  // Status of the task execution
+}
+
+enum TaskStatus {
+  UNKNOWN = 0;
+  IN_PROGRESS = 1;
+  COMPLETED = 2;
+  FAILED = 3;
+}
+
+// Matrix specific message
+message TaskRequest {
+  repeated Row rows_a = 1;
+  repeated Row rows_b = 2;
+  int32 start_row = 3;
+  int32 num_rows = 4;
+}
+
+message Row {
+  repeated double values = 1;
+}
+
+message RowIndices {
+  repeated int32 values = 1;
+}
+
